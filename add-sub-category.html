@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>AKS Machine Test - Sub Categories</title>
+<link rel="stylesheet" href="css/style.css">
+<!--[if lt IE 9]>
+<script type="text/javascript" src="html5.js"></script>
+<![endif]-->
+<!--[if lt IE 7.]>
+<script defer type="text/javascript" src="pngfix1.js"></script>
+<![endif]-->
+
+<!-- Menu start --------------->
+<link href="menu/quickmenu0.css" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="menu/quickmenu0.js"></script>
+<!-- Menu End --------------->
+<style>
+    .status-active { color: green; font-weight: bold; }
+    .status-inactive { color: red; }
+    .action-btn { cursor: pointer; margin: 0 5px; }
+    #subCategoryTable tbody tr:hover { background-color: #f5f5f5; }
+    .error-message { color: red; display: none; }
+    .max-error { color: red; font-weight: bold; }
+</style>
+</head>
+<body>
+<header>
+  <div id="wrap">
+       <div class="logo"><img src="images/logo.png" border="0"></div>
+    <div class="topmenu">
+      <ul>
+        <li><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+        <li><a href="change-password.html">Change Password</a>&nbsp;|</li>
+        <li><a href="index.html" id="logoutBtn"><img src="images/logout.png" width="16" height="16" border="0" align="absmiddle">&nbsp;&nbsp;Logout</a></li>
+      </ul>
+      <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div class="clear"></div>
+</header>
+  <nav>
+    <ul id="qm0" class="qmmc">
+      <li><a href="admin.html">Dashboard</a></li>
+      <li><a href="#">Product</a>
+          <ul>
+            <li><a href="add-category.html">Add Category</a></li>
+            <li><a href="add-sub-category.html">Add Sub Category</a></li>
+            <li><a href="product.html">Add Product</a></li>
+          </ul>
+      </li>    
+    </ul>
+  </nav>
+  
+<div id="wrap">
+  <div class="clear" style="height:5px;"></div>
+  <div id="wrap2">
+    <h1>Add Sub Category</h1>
+    <br>
+    <div class="form-raw">
+      <div class="form-name">Select Category</div>
+      <div class="form-txtfld">
+        <select id="parentCategory">
+          <option value="">Select Category</option>
+          <!-- Categories will be loaded here -->
+        </select>
+        <div id="categoryError" class="error-message">Please select a category</div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    
+    <div class="form-raw">
+      <div class="form-name">Sub Category Name</div>
+      <div class="form-txtfld">
+        <input type="text" id="subCategoryName">
+        <div id="nameError" class="error-message">Please enter sub category name</div>
+        <div id="maxError" class="max-error"></div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    
+    <div class="form-raw">
+      <div class="form-name">Active</div>
+      <div class="form-txtfld">
+        <input type="checkbox" id="isActive" checked>
+      </div>
+      <div class="clear"></div>
+    </div>
+    
+    <div class="form-raw">
+      <div class="form-name">&nbsp;</div>
+      <div class="form-txtfld" style="width:290px;">
+        <input type="button" class="btn" id="submitBtn" value="Submit">
+        <input type="hidden" id="editId" value="">
+      </div>
+    </div>
+  </div>
+  <div class="clear">&nbsp;</div>
+</div>
+<div id="wrap3">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="admintable" id="subCategoryTable">
+    <thead>
+      <tr>
+        <th width="59" align="left">Sr.No.</th>
+        <th width="300" align="left">Category Name</th>
+        <th width="300" align="left">Sub Category Name</th>
+        <th width="100" align="left">Status</th>
+        <th width="70" align="left">Edit</th>
+        <th width="70" align="left">Remove</th>
+      </tr>
+    </thead>
+    <tbody id="subCategoryList">
+      <!-- Sub categories will be loaded here -->
+    </tbody>
+  </table>
+  <div class="clear">&nbsp;</div>
+</div>
+<div class="clear"></div>
+<footer>
+  <footer class="whitefoter">
+    <div class="whitefooter-cont">
+      <div style="float:left;">Copyright © AKS Machine Test. All Rights Reserved.</div>      
+           <a href="https://www.akswebsoft.com/" target="_blank" style="float:right;">
+                <img src="images/akslogo.png" alt="AKS Websoft Consulting Pvt. Ltd." title="AKS Websoft Consulting Pvt. Ltd."></a>
+      <div class="clear"></div>
+    </div>
+  </footer>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const userEmail = localStorage.getItem('userEmail');
+    
+    if (!isLoggedIn || !userEmail) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Initialize storage if not exists
+    if (!localStorage.getItem('categories')) {
+        localStorage.setItem('categories', JSON.stringify([]));
+    }
+    if (!localStorage.getItem('subCategories')) {
+        localStorage.setItem('subCategories', JSON.stringify([]));
+    }
+
+    // DOM elements
+    const parentCategorySelect = document.getElementById('parentCategory');
+    const subCategoryNameInput = document.getElementById('subCategoryName');
+    const isActiveCheckbox = document.getElementById('isActive');
+    const submitBtn = document.getElementById('submitBtn');
+    const editIdInput = document.getElementById('editId');
+    const subCategoryList = document.getElementById('subCategoryList');
+    const maxErrorDiv = document.getElementById('maxError');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Load categories and subcategories
+    loadCategories();
+    loadSubCategories();
+
+    // Submit button event
+    submitBtn.addEventListener('click', function() {
+        const parentCategoryId = parentCategorySelect.value;
+        const subCategoryName = subCategoryNameInput.value.trim();
+        const isActive = isActiveCheckbox.checked;
+        const editId = editIdInput.value;
+
+        // Validate
+        if (!parentCategoryId) {
+            document.getElementById('categoryError').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('categoryError').style.display = 'none';
+        }
+
+        if (!subCategoryName) {
+            document.getElementById('nameError').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('nameError').style.display = 'none';
+        }
+
+        // Check max 4 subcategories per category
+        const subCategories = JSON.parse(localStorage.getItem('subCategories'));
+        const categorySubs = subCategories.filter(sub => sub.parentId === parentCategoryId);
+        
+        if (categorySubs.length >= 4 && !editId) {
+            maxErrorDiv.textContent = 'Maximum 4 subcategories allowed per category';
+            return;
+        } else {
+            maxErrorDiv.textContent = '';
+        }
+
+        if (editId) {
+            // Update existing subcategory
+            updateSubCategory(editId, parentCategoryId, subCategoryName, isActive);
+        } else {
+            // Add new subcategory
+            addSubCategory(parentCategoryId, subCategoryName, isActive);
+        }
+    });
+
+    // Logout button event
+    logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = 'index.html';
+    });
+
+    // Function to load categories into dropdown
+    function loadCategories() {
+        const categories = JSON.parse(localStorage.getItem('categories'));
+        const userEmail = localStorage.getItem('userEmail');
+        
+        // Filter categories by current user
+        const userCategories = categories.filter(cat => cat.createdBy === userEmail);
+        
+        parentCategorySelect.innerHTML = '<option value="">Select Category</option>';
+        
+        userCategories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            parentCategorySelect.appendChild(option);
+        });
+    }
+
+    // Function to load subcategories
+    function loadSubCategories() {
+        const subCategories = JSON.parse(localStorage.getItem('subCategories'));
+        const categories = JSON.parse(localStorage.getItem('categories'));
+        
+        subCategoryList.innerHTML = '';
+        
+        if (subCategories.length === 0) {
+            subCategoryList.innerHTML = '<tr><td colspan="6" align="center">No sub categories found</td></tr>';
+            return;
+        }
+        
+        subCategories.forEach((subCat, index) => {
+            const parentCategory = categories.find(cat => cat.id === subCat.parentId);
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td align="left">${index + 1}</td>
+                <td align="left">${parentCategory ? parentCategory.name : 'N/A'}</td>
+                <td align="left">${subCat.name}</td>
+                <td align="left" class="${subCat.isActive ? 'status-active' : 'status-inactive'}">
+                    ${subCat.isActive ? 'Active' : 'Inactive'}
+                </td>
+                <td align="left">
+                    <a href="#" class="action-btn edit-btn" data-id="${subCat.id}">Edit</a>
+                </td>
+                <td align="center">
+                    <img src="images/icon-bin.jpg" class="action-btn delete-btn" 
+                         data-id="${subCat.id}" width="25" height="25" border="0" align="absmiddle">
+                </td>
+            `;
+            subCategoryList.appendChild(row);
+        });
+
+        // Add event listeners to edit buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const id = this.getAttribute('data-id');
+                editSubCategory(id);
+            });
+        });
+
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                if (confirm('Are you sure you want to delete this sub category?')) {
+                    deleteSubCategory(id);
+                }
+            });
+        });
+    }
+
+    // Function to add a new subcategory
+    function addSubCategory(parentId, name, isActive) {
+        const subCategories = JSON.parse(localStorage.getItem('subCategories'));
+        const userEmail = localStorage.getItem('userEmail');
+        
+        const newSubCategory = {
+            id: Date.now().toString(),
+            parentId: parentId,
+            name: name,
+            isActive: isActive,
+            createdBy: userEmail,
+            createdAt: new Date().toISOString()
+        };
+        
+        subCategories.push(newSubCategory);
+        localStorage.setItem('subCategories', JSON.stringify(subCategories));
+        
+        // Reset form and reload
+        resetForm();
+        loadSubCategories();
+    }
+
+    // Function to update a subcategory
+    function updateSubCategory(id, parentId, name, isActive) {
+        const subCategories = JSON.parse(localStorage.getItem('subCategories'));
+        const subCatIndex = subCategories.findIndex(sub => sub.id === id);
+        
+        if (subCatIndex !== -1) {
+            subCategories[subCatIndex].parentId = parentId;
+            subCategories[subCatIndex].name = name;
+            subCategories[subCatIndex].isActive = isActive;
+            
+            localStorage.setItem('subCategories', JSON.stringify(subCategories));
+            resetForm();
+            loadSubCategories();
+        }
+    }
+
+    // Function to edit a subcategory
+    function editSubCategory(id) {
+        const subCategories = JSON.parse(localStorage.getItem('subCategories'));
+        const subCategory = subCategories.find(sub => sub.id === id);
+        
+        if (subCategory) {
+            parentCategorySelect.value = subCategory.parentId;
+            subCategoryNameInput.value = subCategory.name;
+            isActiveCheckbox.checked = subCategory.isActive;
+            editIdInput.value = subCategory.id;
+            submitBtn.value = 'Update';
+            
+            // Hide max error if showing
+            maxErrorDiv.textContent = '';
+        }
+    }
+
+    // Function to delete a subcategory
+    function deleteSubCategory(id) {
+        let subCategories = JSON.parse(localStorage.getItem('subCategories'));
+        subCategories = subCategories.filter(sub => sub.id !== id);
+        localStorage.setItem('subCategories', JSON.stringify(subCategories));
+        loadSubCategories();
+    }
+
+    // Function to reset the form
+    function resetForm() {
+        subCategoryNameInput.value = '';
+        isActiveCheckbox.checked = true;
+        editIdInput.value = '';
+        submitBtn.value = 'Submit';
+        maxErrorDiv.textContent = '';
+    }
+});
+</script>
+</body>
+</html>

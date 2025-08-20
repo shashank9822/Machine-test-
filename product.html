@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>AKS Machine Test - Products</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!--[if lt IE 9]>
+<script type="text/javascript" src="html5.js"></script>
+<![endif]-->
+  <!--[if lt IE 7.]>
+<script defer type="text/javascript" src="pngfix1.js"></script>
+<![endif]-->
+
+  <!-- Menu start --------------->
+  <link href="menu/quickmenu0.css" rel="stylesheet" type="text/css" media="screen" />
+  <script type="text/javascript" src="menu/quickmenu0.js"></script>
+  <!-- Menu End --------------->
+  <style>
+    .status-active {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-inactive {
+      color: red;
+    }
+
+    .action-btn {
+      cursor: pointer;
+      margin: 0 5px;
+    }
+
+    #productTable tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    .error-message {
+      color: red;
+      display: none;
+    }
+
+    .word-count {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .word-count.error {
+      color: red;
+    }
+
+    #notification {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+
+    .remove-section-btn {
+      margin-left: 10px;
+      color: red;
+      cursor: pointer;
+    }
+
+    .pdf-error {
+      color: red;
+      font-size: 12px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Notification div -->
+  <div id="notification"></div>
+
+  <header>
+    <div id="wrap">
+      <div class="logo"><img src="images/logo.png" border="0"></div>
+      <div class="topmenu">
+        <ul>
+          <li><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+          <li><a href="change-password.html">Change Password</a> |</li>
+          <li><a href="index.html" id="logoutBtn"><img src="images/logout.png" width="16" height="16" border="0"
+                align="absmiddle">&nbsp;&nbsp;Logout</a></li>
+        </ul>
+        <div class="clear"></div>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+  </header>
+  <nav>
+    <ul id="qm0" class="qmmc">
+      <li><a href="admin.html">Dashboard</a></li>
+      <li><a href="#" class="qmactive">Product</a>
+        <ul>
+          <li><a href="add-category.html">Add Category</a></li>
+          <li><a href="add-sub-category.html">Add Sub Category</a></li>
+          <li><a href="product.html">Add Product</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <div id="wrap">
+    <div class="clear" style="height:5px;"></div>
+    <div id="wrap2">
+      <h1>Add Product</h1>
+      <br>
+
+      <div class="form-raw">
+        <div class="form-name">Select Category</div>
+        <div class="form-txtfld">
+          <select id="productCategory" required>
+            <option value="">Select Option</option>
+            <!-- Categories will load here -->
+          </select>
+          <div id="categoryError" class="error-message">Please select a category</div>
+        </div>
+      </div>
+      <div class="clear"></div>
+
+      <div class="form-raw">
+        <div class="form-name">Select Sub Category</div>
+        <div class="form-txtfld">
+          <select id="productSubCategory" multiple="select" style="height: 100px;" required>
+            <option value="">Select Option</option>
+            <!-- Sub categories will load here -->
+          </select>
+          <div id="subCategoryError" class="error-message">Please select at least one sub category</div>
+        </div>
+      </div>
+      <div class="clear"></div>
+
+      <div class="form-raw">
+        <div class="form-name">Product Name</div>
+        <div class="form-txtfld">
+          <input type="text" id="productName" required>
+          <div id="nameError" class="error-message">Please enter product name</div>
+        </div>
+      </div>
+
+      <div class="form-raw">
+        <div class="form-name">Product Image1</div>
+        <div class="form-txtfld">
+          <input type="file" id="productImage">
+          <div class="form-name"> Image Size ( Width=560px, Height=390px ) (Product page)</div>
+        </div>
+      </div>
+      <div class="clear"></div>
+
+      <div class="form-raw" style="width:100%;">
+        <div class="form-name">Short Description</div>
+        <div class="form-txtfld">
+          <textarea id="shortDescription" required></textarea>
+          <div id="shortDescError" class="error-message">Please enter short description (max 80 words)</div>
+          <div class="word-count" id="shortDescCount">0/80 words</div>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+      <h1 style="border-bottom: 1px solid #CCC; padding-bottom: 10px; margin: 20px 0 0px 0;">Description</h1>
+      <br>
+      <div id="descriptionSections">
+        <!-- Description sections will be added here -->
+      </div>
+      <div id="titleCountError" class="error-message"></div>
+
+      <div class="clear"></div>
+      <h1 style="border-bottom: 1px solid #CCC; padding-bottom: 10px; margin: 20px 0 0px 0;">Features</h1>
+      <br>
+      <div class="form-raw" style="width:100%;">
+        <div class="form-name">Content</div>
+        <div class="form-txtfld" style="width:780px;">
+          <textarea id="featuresContent" style="width:100%; height:500px;" required></textarea>
+          <div id="featuresError" class="error-message">Please enter features content (max 300 words)</div>
+          <div class="word-count" id="featuresCount">0/300 words</div>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+      <h1 style="border-bottom: 1px solid #CCC; padding-bottom: 10px; margin: 20px 0 0px 0;">Upload PDF</h1>
+      <br>
+      <div id="pdfUploads">
+        <!-- PDF upload sections will be added here -->
+      </div>
+      <div class="form-raw">
+        <div class="form-name">&nbsp;</div>
+        <div class="form-txtfld" style="width: 320px; text-align: right;"><a href="#" id="addPdfBtn">Add More +</a>
+          <div id="pdfError" class="error-message">Please upload at least one PDF file</div>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+      <div class="form-raw">
+        <div class="form-name">Active</div>
+        <div class="form-txtfld">
+          <input type="checkbox" id="isActive" checked>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="clear"></div>
+      <div class="form-raw">
+        <div class="form-name">&nbsp;</div>
+        <div class="form-txtfld">
+          <input type="button" id="submitBtn" class="btn" value="Submit">
+          <input type="hidden" id="editProductId" value="">
+        </div>
+      </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+  </div>
+  <div id="wrap2">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="admintable" id="productTable">
+      <thead>
+        <tr>
+          <th width="50" align="left">Sr.No.</th>
+          <th width="200" align="left">Category</th>
+          <th width="200" align="left">Sub Categories</th>
+          <th width="200" align="left">Product Name</th>
+          <th width="100" align="left">Status</th>
+          <th width="70" align="left">Edit</th>
+          <th width="70" align="left">Remove</th>
+        </tr>
+      </thead>
+      <tbody id="productList">
+        <!-- Products will load here -->
+      </tbody>
+    </table>
+    <div class="clear">&nbsp;</div>
+  </div>
+  <div class="clear"></div>
+  <footer>
+    <footer class="whitefoter">
+      <div class="whitefooter-cont">
+        <div style="float:left;">Copyright © AKS Machine Test. All Rights Reserved.</div>
+        <a href="https://www.akswebsoft.com/" target="_blank" style="float:right;"> <img src="images/akslogo.png"
+            alt="AKS Websoft Consulting Pvt. Ltd." title="AKS Websoft Consulting Pvt. Ltd."></a>
+        <div class="clear"></div>
+      </div>
+    </footer>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Check authentication
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      const userEmail = localStorage.getItem('userEmail');
+
+      if (!isLoggedIn || !userEmail) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Initialize storage if not exists
+      if (!localStorage.getItem('products')) {
+        localStorage.setItem('products', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('categories')) {
+        localStorage.setItem('categories', JSON.stringify([
+          { id: '1', name: 'Category 1', createdBy: userEmail },
+          { id: '2', name: 'Category 2', createdBy: userEmail }
+        ]));
+      }
+      if (!localStorage.getItem('subCategories')) {
+        localStorage.setItem('subCategories', JSON.stringify([
+          { id: '1', parentId: '1', name: 'Sub Category 1-1', createdBy: userEmail },
+          { id: '2', parentId: '1', name: 'Sub Category 1-2', createdBy: userEmail },
+          { id: '3', parentId: '2', name: 'Sub Category 2-1', createdBy: userEmail }
+        ]));
+      }
+
+      // DOM elements
+      const productCategory = document.getElementById('productCategory');
+      const productSubCategory = document.getElementById('productSubCategory');
+      const productName = document.getElementById('productName');
+      const shortDescription = document.getElementById('shortDescription');
+      const featuresContent = document.getElementById('featuresContent');
+      const isActive = document.getElementById('isActive');
+      const editProductId = document.getElementById('editProductId');
+      const productList = document.getElementById('productList');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const descriptionSections = document.getElementById('descriptionSections');
+      const pdfUploads = document.getElementById('pdfUploads');
+      const submitBtn = document.getElementById('submitBtn');
+      const addPdfBtn = document.getElementById('addPdfBtn');
+      const shortDescCount = document.getElementById('shortDescCount');
+      const featuresCount = document.getElementById('featuresCount');
+      const pdfError = document.getElementById('pdfError');
+      const titleCountError = document.getElementById('titleCountError');
+
+      // Load initial data
+      loadCategories();
+      loadProducts();
+      initializeDescriptionSections();
+      addPdfUploadSection();
+
+      // Event listeners
+      submitBtn.addEventListener('click', submitForm);
+      addPdfBtn.addEventListener('click', function (e) {
+        addPdfUploadSection('', '', e);
+      });
+      productCategory.addEventListener('change', function () {
+        loadSubCategories(this.value);
+      });
+      logoutBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userEmail');
+        window.location.href = 'index.html';
+      });
+
+      // Word count monitoring
+      shortDescription.addEventListener('input', updateWordCount);
+      featuresContent.addEventListener('input', updateWordCount);
+
+      function updateWordCount() {
+        // Update short description count
+        const shortDescWords = shortDescription.value.trim().split(/\s+/).filter(word => word.length > 0);
+        shortDescCount.textContent = `${shortDescWords.length}/80 words`;
+        if (shortDescWords.length > 80) {
+          shortDescCount.classList.add('error');
+        } else {
+          shortDescCount.classList.remove('error');
+        }
+
+        // Update features count
+        const featuresWords = featuresContent.value.trim().split(/\s+/).filter(word => word.length > 0);
+        featuresCount.textContent = `${featuresWords.length}/1000 words`;
+        if (featuresWords.length > 1000) {
+          featuresCount.classList.add('error');
+        } else {
+          featuresCount.classList.remove('error');
+        }
+      }
+
+      // Functions
+      function loadCategories() {
+        const categories = JSON.parse(localStorage.getItem('categories')) || [];
+        const userCategories = categories.filter(cat => cat.createdBy === userEmail);
+
+        productCategory.innerHTML = '<option value="">Select Option</option>';
+        userCategories.forEach(category => {
+          const option = document.createElement('option');
+          option.value = category.id;
+          option.textContent = category.name;
+          productCategory.appendChild(option);
+        });
+      }
+
+      function loadSubCategories(categoryId) {
+        const subCategories = JSON.parse(localStorage.getItem('subCategories')) || [];
+        const categorySubs = subCategories.filter(sub => sub.parentId === categoryId);
+
+        productSubCategory.innerHTML = '<option value="">Select Option</option>';
+        categorySubs.forEach(subCat => {
+          const option = document.createElement('option');
+          option.value = subCat.id;
+          option.textContent = subCat.name;
+          productSubCategory.appendChild(option);
+        });
+      }
+
+      function loadProducts() {
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const categories = JSON.parse(localStorage.getItem('categories')) || [];
+        const subCategories = JSON.parse(localStorage.getItem('subCategories')) || [];
+
+        productList.innerHTML = '';
+
+        if (products.length === 0) {
+          productList.innerHTML = '<tr><td colspan="7" align="center">No products found</td></tr>';
+          return;
+        }
+
+        products.forEach((product, index) => {
+          const category = categories.find(cat => cat.id === product.categoryId);
+          const productSubs = product.subCategoryIds.map(subId => {
+            const sub = subCategories.find(s => s.id === subId);
+            return sub ? sub.name : 'N/A';
+          }).join(', ');
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${category ? category.name : 'N/A'}</td>
+                <td>${productSubs}</td>
+                <td>${product.name}</td>
+                <td class="${product.isActive ? 'status-active' : 'status-inactive'}">
+                    ${product.isActive ? 'Active' : 'Inactive'}
+                </td>
+                <td><a href="#" class="action-btn edit-btn" data-id="${product.id}">Edit</a></td>
+                <td align="center"><img src="images/icon-bin.jpg" class="action-btn delete-btn" data-id="${product.id}" width="25" height="25" border="0" align="absmiddle"></td>
+            `;
+          productList.appendChild(row);
+        });
+
+        // Add event listeners to edit buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const id = this.getAttribute('data-id');
+            editProduct(id);
+          });
+        });
+
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            if (confirm('Are you sure you want to delete this product?')) {
+              deleteProduct(id);
+            }
+          });
+        });
+      }
+
+      function submitForm() {
+        // Hide all error messages first
+        document.querySelectorAll('.error-message').forEach(el => {
+          el.style.display = 'none';
+        });
+
+        // Validate form
+        if (!validateForm()) return;
+
+        // Get selected subcategories
+        const selectedSubCategories = Array.from(productSubCategory.selectedOptions)
+          .map(option => option.value)
+          .filter(value => value);
+
+        // Create product object
+        const product = {
+          id: editProductId.value || Date.now().toString(),
+          categoryId: productCategory.value,
+          subCategoryIds: selectedSubCategories,
+          name: productName.value,
+          shortDescription: shortDescription.value,
+          features: featuresContent.value,
+          isActive: isActive.checked,
+          createdBy: userEmail,
+          createdAt: new Date().toISOString(),
+          descriptions: getDescriptionData(),
+          pdfs: getPdfData()
+        };
+
+        // Save product
+        saveProduct(product);
+      }
+
+      function saveProduct(product) {
+        let products = JSON.parse(localStorage.getItem('products'));
+
+        if (editProductId.value) {
+          // Update existing product
+          const index = products.findIndex(p => p.id === product.id);
+          if (index !== -1) {
+            products[index] = product;
+            showNotification('Product updated successfully!');
+          }
+        } else {
+          // Add new product
+          products.push(product);
+          showNotification('Product added successfully!');
+        }
+
+        localStorage.setItem('products', JSON.stringify(products));
+        resetForm();
+        loadProducts();
+      }
+
+      function editProduct(id) {
+        const products = JSON.parse(localStorage.getItem('products'));
+        const product = products.find(p => p.id === id);
+
+        if (product) {
+          // Set basic fields
+          productCategory.value = product.categoryId;
+          loadSubCategories(product.categoryId);
+
+          // Need to wait for subcategories to load before selecting them
+          setTimeout(() => {
+            Array.from(productSubCategory.options).forEach(option => {
+              option.selected = product.subCategoryIds.includes(option.value);
+            });
+          }, 100);
+
+          productName.value = product.name;
+          shortDescription.value = product.shortDescription;
+          featuresContent.value = product.features || '';
+          isActive.checked = product.isActive;
+          editProductId.value = product.id;
+
+          // Update word counts
+          updateWordCount();
+
+          // Load descriptions
+          descriptionSections.innerHTML = '';
+          if (product.descriptions && product.descriptions.length > 0) {
+            product.descriptions.forEach((desc, index) => {
+              // For the first section in edit mode, use empty title if it was empty before
+              const title = index === 0 && !desc.title ? '' : (desc.title || `Title ${index}`);
+              addDescriptionSection(title, desc.items, false);
+            });
+          } else {
+            addDescriptionSection('', [], false, true);
+          }
+
+          // Load PDFs
+          pdfUploads.innerHTML = '';
+          if (product.pdfs && product.pdfs.length > 0) {
+            product.pdfs.forEach(pdf => {
+              addPdfUploadSection(pdf.heading, pdf.fileName);
+            });
+          } else {
+            addPdfUploadSection();
+          }
+
+          submitBtn.value = 'Update';
+
+          // Scroll to form
+          document.getElementById('wrap2').scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+
+      function deleteProduct(id) {
+        let products = JSON.parse(localStorage.getItem('products'));
+        products = products.filter(p => p.id !== id);
+        localStorage.setItem('products', JSON.stringify(products));
+        showNotification('Product deleted successfully!');
+        loadProducts();
+      }
+
+      function resetForm() {
+        productCategory.value = '';
+        productSubCategory.innerHTML = '<option value="">Select Option</option>';
+        productName.value = '';
+        shortDescription.value = '';
+        featuresContent.value = '';
+        isActive.checked = true;
+        editProductId.value = '';
+        descriptionSections.innerHTML = '';
+        pdfUploads.innerHTML = '';
+        initializeDescriptionSections();
+        addPdfUploadSection();
+        submitBtn.value = 'Submit';
+        updateWordCount();
+      }
+
+      function validateForm() {
+        let isValid = true;
+
+        // Validate category
+        if (!productCategory.value) {
+          document.getElementById('categoryError').style.display = 'block';
+          isValid = false;
+        }
+
+        // Validate at least one subcategory selected
+        const selectedSubs = Array.from(productSubCategory.selectedOptions)
+          .filter(option => option.value);
+        if (selectedSubs.length === 0) {
+          document.getElementById('subCategoryError').style.display = 'block';
+          isValid = false;
+        }
+
+        // Validate product name
+        if (!productName.value.trim()) {
+          document.getElementById('nameError').style.display = 'block';
+          isValid = false;
+        }
+
+        // Validate short description (max 80 words)
+        const shortDescWords = shortDescription.value.trim().split(/\s+/).filter(word => word.length > 0);
+        if (shortDescWords.length === 0) {
+          document.getElementById('shortDescError').style.display = 'block';
+          document.getElementById('shortDescError').textContent = 'Please enter short description';
+          isValid = false;
+        } else if (shortDescWords.length > 80) {
+          document.getElementById('shortDescError').style.display = 'block';
+          document.getElementById('shortDescError').textContent = 'Short description cannot exceed 80 words';
+          isValid = false;
+        }
+
+        // Validate features (max 300 words)
+        const featuresWords = featuresContent.value.trim().split(/\s+/).filter(word => word.length > 0);
+        if (featuresWords.length === 0) {
+          document.getElementById('featuresError').style.display = 'block';
+          document.getElementById('featuresError').textContent = 'Please enter features content';
+          isValid = false;
+        } else if (featuresWords.length > 1000) {
+          document.getElementById('featuresError').style.display = 'block';
+          document.getElementById('featuresError').textContent = 'Features content cannot exceed 1000 words';
+          isValid = false;
+        }
+
+        // Validate PDFs
+        const pdfSections = pdfUploads.querySelectorAll('.pdf-section');
+        let hasPdfFile = false;
+
+        pdfSections.forEach(section => {
+          const fileInput = section.querySelector('input[type="file"]');
+          const headingInput = section.querySelector('input[type="text"]');
+
+          if (fileInput.files.length > 0 || (fileInput.dataset.filename && fileInput.dataset.filename !== '')) {
+            hasPdfFile = true;
+          }
+
+          // Validate PDF heading if file is present
+          if ((fileInput.files.length > 0 || (fileInput.dataset.filename && fileInput.dataset.filename !== '')) &&
+            (!headingInput.value.trim())) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'pdf-error';
+            errorDiv.textContent = 'PDF heading is required';
+            errorDiv.style.display = 'block';
+            section.appendChild(errorDiv);
+            isValid = false;
+          }
+        });
+
+        if (!hasPdfFile) {
+          pdfError.style.display = 'block';
+          isValid = false;
+        }
+
+        return isValid;
+      }
+
+      function addDescriptionSection(title = '', items = [], isNewSection = false) {
+          const existingSections = descriptionSections.querySelectorAll('.desc-section');
+          
+          // Check maximum sections (4)
+          if (existingSections.length >= 4 && isNewSection) {
+              titleCountError.textContent = 'Maximum of 4 description sections allowed';
+              titleCountError.style.display = 'block';
+              return;
+          } else {
+              titleCountError.style.display = 'none';
+          }
+
+          const sectionId = Date.now();
+          const section = document.createElement('div');
+          section.className = 'desc-section form-raw';
+          section.id = `desc-section-${sectionId}`;
+
+          // Determine section numbering
+          let sectionLabel, sectionTitle;
+          
+          if (existingSections.length === 0) {
+              // First section - just "Title" with no number
+              sectionLabel = 'Title';
+              sectionTitle = '';
+          } else if (isNewSection) {
+              // When adding new section, first update existing sections' labels
+              updateSectionLabels();
+              // New section gets next number
+              const sectionNumber = existingSections.length + 1;
+              sectionLabel = `Title ${sectionNumber}`;
+              sectionTitle = `Title ${sectionNumber}`;
+          } else {
+              // Existing sections (during edit) keep their original numbering
+              sectionLabel = title.match(/^Title \d+$/) ? title : 
+                           (existingSections.length > 0 ? `Title ${existingSections.length}` : 'Title');
+              sectionTitle = title;
+          }
+
+          section.innerHTML = `
+              <div class="form-name">${sectionLabel}</div>
+              <div class="form-txtfld" style="display: flex; align-items: center;">
+                  <input type="text" class="desc-title" value="${sectionTitle}" placeholder="Section title" style="flex-grow: 1;">
+                  <a href="#" class="remove-section-btn" data-section="${sectionId}"><img src="images/delete.gif" alt="Delete Section"></a>
+              </div>
+              <div class="clear"></div>
+              <div id="descItems-${sectionId}" style="width:100%">
+                  ${items.length > 0 ?
+                  items.map((item, idx) => `
+                          <div class="form-raw desc-item">
+                              <div class="form-name">&nbsp;</div>
+                              <div class="form-txtfld txtfld50"><input type="text" value="${item.heading}" placeholder="heading"></div>
+                              <div class="form-txtfld txtfld50"><input type="text" value="${item.description}" placeholder="description"></div>
+                              <a href="#" class="remove-desc-item"><img src="images/delete.gif" alt="Delete Item"></a>
+                          </div>
+                      `).join('') : `
+                      <div class="form-raw desc-item">
+                          <div class="form-name">&nbsp;</div>
+                          <div class="form-txtfld txtfld50"><input type="text" placeholder="heading"></div>
+                          <div class="form-txtfld txtfld50"><input type="text" placeholder="description"></div>
+                          <a href="#" class="remove-desc-item"><img src="images/delete.gif" alt="Delete Item"></a>
+                      </div>
+                      `}
+              </div>
+              <div class="form-raw">
+                  <div class="form-name">&nbsp;</div>
+                  <div class="form-txtfld" style="width: 320px; text-align: right;">
+                      <a href="#" class="add-desc-item" data-section="${sectionId}">Add More +</a>
+                      ${existingSections.length < 3 ? `<a href="#" class="add-desc-section" style="margin-left: 10px;">Add Section +</a>` : ''}
+                  </div>
+              </div>
+          `;
+          descriptionSections.appendChild(section);
+
+          // Add event listeners
+          section.querySelector('.add-desc-item').addEventListener('click', function(e) {
+              e.preventDefault();
+              const sectionId = this.getAttribute('data-section');
+              const itemsContainer = document.getElementById(`descItems-${sectionId}`);
+              
+              if (itemsContainer.querySelectorAll('.desc-item').length >= 4) {
+                  showNotification('Maximum of 4 items per section allowed');
+                  return;
+              }
+              
+              const newItem = document.createElement('div');
+              newItem.className = 'form-raw desc-item';
+              newItem.innerHTML = `
+                  <div class="form-name">&nbsp;</div>
+                  <div class="form-txtfld txtfld50"><input type="text" placeholder="heading"></div>
+                  <div class="form-txtfld txtfld50"><input type="text" placeholder="description"></div>
+                  <a href="#" class="remove-desc-item"><img src="images/delete.gif" alt="Delete Item"></a>
+              `;
+              itemsContainer.appendChild(newItem);
+
+              newItem.querySelector('.remove-desc-item').addEventListener('click', function(e) {
+                  e.preventDefault();
+                  const itemsContainer = this.closest('#descItems-' + sectionId);
+                  if (itemsContainer.querySelectorAll('.desc-item').length > 1) {
+                      this.closest('.desc-item').remove();
+                  }
+              });
+          });
+
+          const addSectionBtn = section.querySelector('.add-desc-section');
+          if (addSectionBtn) {
+              addSectionBtn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  // First update existing sections to numbered titles
+                  updateSectionLabels();
+                  // Then add new section
+                  addDescriptionSection('', [], true);
+              });
+          }
+
+          section.querySelector('.remove-section-btn').addEventListener('click', function(e) {
+              e.preventDefault();
+              if (descriptionSections.querySelectorAll('.desc-section').length > 1) {
+                  section.remove();
+                  updateSectionLabels();
+              }
+          });
+
+          section.querySelectorAll('.remove-desc-item').forEach(btn => {
+              btn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  const itemsContainer = this.closest('#descItems-' + sectionId);
+                  if (itemsContainer.querySelectorAll('.desc-item').length > 1) {
+                      this.closest('.desc-item').remove();
+                  }
+              });
+          });
+      }
+
+      function updateSectionLabels() {
+          const sections = descriptionSections.querySelectorAll('.desc-section');
+          
+          sections.forEach((section, index) => {
+              const label = section.querySelector('.form-name');
+              const input = section.querySelector('.desc-title');
+              
+              if (label) {
+                  // First section becomes "Title 1" when adding new sections
+                  label.textContent = `Title ${index + 1}`;
+              }
+              
+              if (input && (input.value === '' || input.value.match(/^Title \d+$/))) {
+                  input.value = `Title ${index + 1}`;
+              }
+          });
+      }
+
+      function initializeDescriptionSections() {
+          descriptionSections.innerHTML = '';
+          // Add initial section with just "Title" (no number)
+          addDescriptionSection('', [], false);
+      }
+
+      function addPdfUploadSection(heading = '', fileName = '', event = null) {
+        if (event) {
+          event.preventDefault(); // Prevent page scroll
+        }
+
+        // Count existing PDF sections
+        const existingSections = pdfUploads.querySelectorAll('.pdf-section');
+
+        // Check if we've reached the maximum (4)
+        if (existingSections.length >= 4) {
+          showNotification('Maximum of 4 PDF sections allowed');
+          return;
+        }
+
+        const sectionId = Date.now();
+        const section = document.createElement('div');
+        section.className = 'pdf-section form-raw';
+        section.id = `pdf-section-${sectionId}`;
+        section.innerHTML = `
+            <div class="form-name">&nbsp;</div>
+            <div class="form-txtfld" style="display: flex; align-items: center;">
+                <div style="display: flex; flex-grow: 1;">
+                    <div class="form-txtfld txtfld50"><input type="text" value="${heading}" placeholder="PDF heading"></div>
+                    <div class="form-txtfld txtfld50"><input type="file" ${fileName ? 'data-filename="' + fileName + '"' : ''}></div>
+                </div>
+                <a href="#" class="remove-pdf-section" style="margin-left: 10px;"><img src="images/delete.gif" alt="Delete PDF"></a>
+            </div>
+            ${fileName ? `<div class="form-raw"><div class="form-name">&nbsp;</div><div class="form-txtfld"><span style="margin-left:10px;">${fileName}</span></div></div>` : ''}
+            <div class="pdf-error"></div>
+        `;
+        pdfUploads.appendChild(section);
+
+        section.querySelector('.remove-pdf-section').addEventListener('click', function (e) {
+          e.preventDefault();
+          if (pdfUploads.querySelectorAll('.pdf-section').length > 1) {
+            section.remove();
+          } else {
+            // Clear inputs if it's the last section
+            section.querySelector('input[type="text"]').value = '';
+            section.querySelector('input[type="file"]').value = '';
+            if (section.querySelector('span')) {
+              section.querySelector('span').textContent = '';
+            }
+          }
+        });
+      }
+
+      function getDescriptionData() {
+        const descriptions = [];
+        const sections = descriptionSections.querySelectorAll('.desc-section');
+
+        for (let i = 0; i < sections.length; i++) {
+          const titleInput = sections[i].querySelector('.desc-title');
+          if (titleInput) {
+            const title = titleInput.value.trim();
+            const items = [];
+
+            const sectionId = sections[i].id.split('-')[2];
+            const itemRows = sections[i].querySelectorAll(`#descItems-${sectionId} .desc-item`);
+
+            for (let j = 0; j < itemRows.length; j++) {
+              const inputs = itemRows[j].querySelectorAll('input[type="text"]');
+              if (inputs.length === 2) {
+                const heading = inputs[0].value.trim();
+                const description = inputs[1].value.trim();
+                if (heading || description) {
+                  items.push({
+                    heading: heading,
+                    description: description
+                  });
+                }
+              }
+            }
+
+            if (title || items.length > 0) {
+              descriptions.push({
+                title: title,
+                items: items
+              });
+            }
+          }
+        }
+        return descriptions;
+      }
+
+      function getPdfData() {
+        const pdfs = [];
+        const sections = pdfUploads.querySelectorAll('.pdf-section');
+
+        for (let i = 0; i < sections.length; i++) {
+          const textInput = sections[i].querySelector('input[type="text"]');
+          const fileInput = sections[i].querySelector('input[type="file"]');
+
+          const heading = textInput ? textInput.value.trim() : '';
+          const fileName = fileInput.files.length > 0 ?
+            fileInput.files[0].name :
+            (fileInput.dataset.filename || '');
+
+          if (heading || fileName) {
+            pdfs.push({
+              heading: heading,
+              fileName: fileName
+            });
+          }
+        }
+        return pdfs;
+      }
+
+      function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.display = 'block';
+        setTimeout(() => {
+          notification.style.display = 'none';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
